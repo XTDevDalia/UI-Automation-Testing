@@ -7,7 +7,7 @@ const baseURL =
   'https://4.186.12.176:90/account/devlogin';
 
 const username =
-  process.env.USERNAME ||
+  process.env.EMAIL ||
   'jayant.x.jhanwar@haleon.com';
 
 const password =
