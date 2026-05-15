@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 // Configuration
 const baseURL =
   process.env.BASE_URL ||
-  'https://4.186.12.176:90/account/devlogin';
+  'https://iactivatehaleon.com//account/devlogin';
 
 const username =
   process.env.EMAIL ||
@@ -19,7 +19,7 @@ const role =
   'HOAdmin';
 
 const activityPlanningURL =
-  'https://4.186.12.176:90/ActivityPlan/Index';
+  'https://iactivatehaleon.com/ActivityPlan/Index';
 
 test('Login successfully and navigate to Activity Planning page', async ({ page, context }) => {
   // Open login page
@@ -104,10 +104,31 @@ test('Login successfully and navigate to Activity Planning page', async ({ page,
   // Alternative URL verification
   await expect(page).toHaveURL(/ActivityPlan\/Index/i);
 
-  // Optional: Verify page heading
-  // await expect(
-  //   page.getByRole('heading', { name: /activity planning/i })
-  // ).toBeVisible();
+  // ==========================================
+  // Click on "Create New Plan" Button
+  // ==========================================
+  const createNewPlanBtn = page.getByRole('button', {
+    name: /create new plan/i,
+  });
+
+  // If it's a link instead of a button, use this as fallback
+  const createNewPlanLink = page.getByRole('link', {
+    name: /create new plan/i,
+  });
+
+  // Wait for either button or link to be visible
+  const createNewPlanElement = (await createNewPlanBtn.count())
+    ? createNewPlanBtn
+    : createNewPlanLink;
+
+  await expect(createNewPlanElement.first()).toBeVisible({ timeout: 10000 });
+  await createNewPlanElement.first().click();
+
+  // Wait for the new plan form/page to load
+  await page.waitForLoadState('networkidle');
+
+  // Optional: Verify you're on the new plan creation page
+  // await expect(page).toHaveURL(/create|new|add/i);
 
   // Pause for debugging
   await page.pause();
